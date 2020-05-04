@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../imgs/favicon.ico" type="image/ico">
+    <script src="../js/events.js"></script>
+    <script src="../js/visual/objects.js"></script>
+    <script src="../js/visual/handler.js"></script>
+    <script src="../js/api/objects.js"></script>
+    <title>Title</title>
+    <script>document.addEventListener('DOMContentLoaded', function () {
+            let get = function (id) {
+                return document.getElementById(id);
+            };
+            get('t-name').textContent = 'Solo leveling';
+            get('t-views').textContent = '2.4M';
+            get('t-desc').textContent = '10 лет назад, после того, как «Врата», соединившие реальный мир с параллельным, открылись, некоторые из  людей получили силу охотиться на монстров внутри "Врат". Они известны как «Охотники». Однако не все Охотники сильные. Меня зовут Сун Джин-Ву, охотник E-ранга. Я тот, кто рискует своей жизнью в самых низких уровнях подземелья. Не имея никаких сверхсильных навыков, я едва зарабатывал необходимые деньги, сражаясь в низкоуровневых подземельях... по крайней мере, пока я не нашел скрытое подземелье с самыми трудными проблемами в подземельях D-ранга! В конце концов, когда я умер, я внезапно получил странную силу, журнал квестов, который мог видеть только я, секрет для поднятия уровня, о котором знаю только я! Если я тренируюсь в соответствии с моими квестами и охочусь на монстров, то мой уровень повышается. Переход от самого слабого охотника к самому сильному, охотнику S-ранга!';
+            let img = get('fav');
+            let flag = false;
+            get('inFav').addEventListener('click', function (event) {
+                if (!flag)
+                    img.src = "../imgs/like scarlet.svg";
+                else
+                    img.src = "../imgs/like.svg";
+                flag = !flag;
+            });
+            get('read').addEventListener('click', function (event) {
+                
+            });
+        });</script>
+</head>
+
+<body>
+    <div class="mh90v">
+        <div class="content-center" id="header">
+            <div class="header">
+                <div class="navigate">
+                    <a class="link logo button" href="/">
+                        <img src="../imgs/logo.svg" alt="logo">
+                    </a>
+                </div>
+                <div class="navigate">
+                    <a class="header-item link button" href="/manga" id="manga">
+                        Manga
+                    </a>
+                    <a class="header-item link button" href="/news" id="news">
+                        News
+                    </a>
+                    <a class="header-item link button" href="/top100" id="top100">
+                        Top 100
+                    </a>
+                    <a class="header-item link button" href="/random" id="random">
+                        Random
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="content content-center">
+            <div class="title">
+                <div class="title-container pad-w20">
+                    <div class="title-img">
+                        <img src="../media/titles/solo-leveling/high_cover.jpg">
+                    </div>
+                    <div class="title-action">
+                        <a class="link button h25 full-w" href="/manga" id="read">Начать читать</a>
+                        <a class="link button h25 full-w" href="#" id="inFav">
+                            Добавить в любимое
+                            <img class="pad-left5" id="fav" src="../imgs/like.svg">
+                        </a>
+                    </div>
+                </div>
+                <div class="title-desc">
+                    <div class="text30 text-left" id="t-name"></div>
+                    <div class="content pad-top20 text20">
+                        <div>Просмотров:</div>
+                        <div class="pad-left5" id="t-views">0</div>
+                    </div>
+                    <div class="text25 pad-top20">
+                        Описание
+                    </div>
+                    <div class="text text-justify pad-top20 max-w600" id="t-desc"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        Copyright 2020 YuManga.net.
+    </footer>
+</body>
+
+</html>
