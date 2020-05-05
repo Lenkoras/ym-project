@@ -1,77 +1,64 @@
-class PageBuilder {
-    constructor(header, content) {
-        this.header = this.search(header);
-        this.content = this.search(content);
-        this.eventList = new EventList();
-    }
+const express = require("express");
+const axios = require("axios");
+const fs = require('fs')
+ 
+const app = express();
 
-    search(selector) {
-        return document.querySelector(selector);
-    };
+const dir = __dirname + "/public/";
 
-    on(value, type, listener) {
-        let event = function(e) {
-            listener(e);
-            e.preventDefault();
-        };
-        value.addEventListener(type, event);
-    }
-
-    onclick(value, listener) {
-        this.on(value, 'click', listener);
-    }
-
-    link(listener, href) {
-        let value = document.createElement('a');
-        value.classList.add('link');
-        value.href = href;
-        this.click(value, listener);
-        return value;
-    }
-
-    remove(value) {
-        value.removeChild(value.children[0]);
-    }
-
-    moveTo(src) {
-        if (src == document.location.href)
-            return;
-        src = src.split('/');
-        let path = "/";
-        for (let i = 3; i < src.length; i++) {
-            path += src[i];
+function sendPage(response, path) {
+    path = dir + path + ".html";
+    fs.exists(path, function(exists) {
+        if (exists) {
+            fs.readFile(path, "utf8", function(error, data)
+            { 
+                response.send(data);
+            });
         }
-        history.pushState(null, null, path);
-        this.remove(this.content);
-        let sender = this;
-
-        this.addEventListener(path, function(request) {
-            sender.content.innerHTML = request.responseText;
-        });
-        this.download(path);
-    }
-
-    addEventListener(type, listener) {
-        this.eventList.add(type, listener);
-    }
-
-    download(src) {
-        let request = new XMLHttpRequest();
-        const sender = this;
-        request.onload = function() {
-            sender.eventList.invoke(src, request, sender);
-        };
-        request.open('GET', src);
-        request.send();
-    }
+        else {
+            response.status(404).sendFile(dir + 'pages/404.html');
+        }
+    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    let buttons = document.querySelectorAll('.button');
-    let builder = new PageBuilder('#header', '.content');
-    for (let i = 0; i < buttons.length; i++) {
-        builder.onclick(buttons[i], function(event) {
-            builder.moveTo(buttons[i].href);
-        });   
+app.use(express.static("public"));
+
+app.use("/api/", async function(request, response) {
+    try {
+        let json = await axios.get('https://api.remanga.org/api/' + request.url);
+        response.json(json.data);
     }
+    catch (ex) {
+        const { statusCode } = ex.request.res;
+        if (statusCode == 404) {
+            let obj = { msg: "Content not found",
+                        statusCode: 404
+                    };
+            response.status(404).send(obj);
+        }
+        else
+        {
+            response.status(statusCode).send("<h1>500 Internal Server Error</h1>");
+        }
+    }
+});
+app.use("/media/", function(request, response) {
+    response.redirect("https://remanga.org/media/" + request.url);
+});
+app.use("/content/", function(request, response) {
+    if (request.url === '/') {
+        sendPage(response, 'pages/catalog');
+    }
+    else {
+        sendPage(response, "pages/" + request.url);
+    }
+});
+app.use('/title/:name', function(request, response) {
+    response.redirect('/api/search/?query=' + request.params.name + "&count=1");
+});
+app.use(function(request, response) {
+    sendPage(response, 'index');
+});
+app.listen(19532, function() {
+    console.log('server started');
 });
